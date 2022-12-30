@@ -3,7 +3,6 @@
 #By Gustavisk
 
 envSelec=("Flutter Pub Get" "Flutter Clean e Pub get")
-appSelec=("Novomundo App" "Megamoda App")
 dirname=$(pwd)
 
 dirname="${dirname%/}"
