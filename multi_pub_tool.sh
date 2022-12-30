@@ -19,7 +19,7 @@ redEcho() {
     echo -e "\e[31m$1\e[0m"
 }
 
-detect_flutter_project(){
+detect_flutter_project() {
     local pub_file=$(find $dirname -maxdepth 2 -type f -name "*pubspec.yaml*" -print | sed 's|\(.*\)/.*|\1|')
 
     if [[ -z $pub_file ]]; then
@@ -37,36 +37,38 @@ pub_exec() {
 
         for i in "${array[@]}"; do
             local dir=$(echo $i | tr -d '.')
+            local working_dir="${dir##*/}"
             cd $i
-            yellowEcho "Executando flutter pub get em $dir ..."
+            yellowEcho "Executando flutter pub get em $working_dir..."
             flutter pub get >>/dev/null
             if [[ $? -eq 0 ]]; then
-                greenEcho "Executado com sucesso !"
+                greenEcho "Executado com sucesso!"
                 echo ""
             else
-                redEcho "Erro no flutter pub get em $dir"
+                redEcho "Erro no flutter pub get em $working_dir!"
                 echo ""
             fi
         done
     else
         for i in "${array[@]}"; do
             local dir=$(echo $i | tr -d '.')
+            local working_dir="${dir##*/}"
             cd $i
-            yellowEcho "Executando flutter clean em $dir ..."
+            yellowEcho "Executando flutter clean em $working_dir ..."
             flutter clean >>/dev/null
             if [[ $? -eq 0 ]]; then
                 greenEcho "Executado com sucesso !"
-                echo ""
             else
-                redEcho "Erro no flutter clean em $dir"
-                echo ""
+                redEcho "Erro no flutter clean em $working_dir"
             fi
-            yellowEcho "Executando flutter pub get em $dir ..."
+            yellowEcho "Executando flutter pub get em $working_dir ..."
             flutter pub get >>/dev/null
             if [[ $? -eq 0 ]]; then
                 greenEcho "Executado com sucesso !"
+                echo ""
             else
-                redEcho "Erro no flutter pub get em $dir"
+                redEcho "Erro no flutter pub get em $working_dir"
+                echo ""
             fi
 
         done
