@@ -19,6 +19,15 @@ redEcho() {
     echo -e "\e[31m$1\e[0m"
 }
 
+detect_flutter_project(){
+    local pub_file=$(find $dirname -maxdepth 2 -type f -name "*pubspec.yaml*" -print | sed 's|\(.*\)/.*|\1|')
+
+    if [[ -z $pub_file ]]; then
+        redEcho "Não foi encontrado nenhum projeto flutter neste diretório"
+        exit 1
+    fi
+}
+
 pub_exec() {
 
     files=$(find $dirname -maxdepth 2 -type f -name "*pubspec.yaml*" -print | sed 's|\(.*\)/.*|\1|')
@@ -63,15 +72,7 @@ pub_exec() {
         done
     fi
 }
-
-while true; do
-    if [[ ! "$subdir" == "app-megamoda" || "$subdir" == "app-novo-mundo" ]]; then
-        redEcho "Obrigatorio estar na pasta raiz do projeto!!!"
-        exit
-    else
-        break
-    fi
-done
+detect_flutter_project
 
 select opt in "${envSelec[@]}"; do
     case $opt in
