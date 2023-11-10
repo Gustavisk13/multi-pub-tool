@@ -29,7 +29,7 @@ detect_flutter_project() {
 }
 
 pub_exec() {
-
+    fvm=$2
     files=$(find $dirname -maxdepth 2 -type f -name "*pubspec.yaml*" -print | sed 's|\(.*\)/.*|\1|')
     readarray -t array <<<"$files"
 
@@ -40,7 +40,11 @@ pub_exec() {
             local working_dir="${dir##*/}"
             cd $i
             yellowEcho "Executando flutter pub get em $working_dir..."
-            flutter pub get >>/dev/null
+            if [[ $fvm == "y" ]]; then
+                fvm flutter pub get >>/dev/null
+            else
+                flutter pub get >>/dev/null
+            fi
             if [[ $? -eq 0 ]]; then
                 greenEcho "Executado com sucesso!"
                 echo ""
@@ -55,14 +59,22 @@ pub_exec() {
             local working_dir="${dir##*/}"
             cd $i
             yellowEcho "Executando flutter clean em $working_dir ..."
-            flutter clean >>/dev/null
+            if [[ $fvm == "y" ]]; then
+                fvm flutter clean >>/dev/null
+            else
+                flutter clean >>/dev/null
+            fi
             if [[ $? -eq 0 ]]; then
                 greenEcho "Executado com sucesso !"
             else
                 redEcho "Erro no flutter clean em $working_dir"
             fi
             yellowEcho "Executando flutter pub get em $working_dir ..."
-            flutter pub get >>/dev/null
+            if [[ $fvm == "y" ]]; then
+                fvm flutter pub get >>/dev/null
+            else
+                flutter pub get >>/dev/null
+            fi
             if [[ $? -eq 0 ]]; then
                 greenEcho "Executado com sucesso !"
                 echo ""
@@ -96,4 +108,6 @@ select opt in "${envSelec[@]}"; do
     esac
 done
 
-pub_exec $env
+read -p "Utiliza FVM? (y/n): " fvm
+
+pub_exec $env $fvm
